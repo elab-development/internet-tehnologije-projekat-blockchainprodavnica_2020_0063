@@ -1,1 +1,33 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/1IMeAlJr)
+# Tokenmaster
+
+## Potrebni alati
+
+- Solidity (Writing Smart Contracts & Tests)
+- Javascript (React & Testing)
+- [Hardhat](https://hardhat.org/) (Development Framework)
+- [Ethers.js](https://docs.ethers.io/v5/) (Blockchain Interaction)
+- [React.js](https://reactjs.org/) (Frontend Framework)
+- [MetaMask](https://metamask.io/)
+
+## Zahtevi za inicijalizaciju projekta 
+- Install [NodeJS](https://nodejs.org/en/)
+- Install [MetaMask](https://metamask.io/) ekstenzija za chrome
+
+## Postavljanje
+### 1. Klonirajte repozitorijum
+
+### 2. Instalacija potrebnih paketa
+`$ npm install`
+
+### 3. Pokrenite test za backend
+`$ npx hardhat test`
+
+### 4. Pokrenite hardhat node
+`$ npx hardhat node`
+
+### 5. Pokrenite skriptu za implementaciju pametnog ugovora na lokalnoj mrezi
+U novom terminalu pozovite komandu:
+`$ npx hardhat run ./scripts/deploy.js --network localhost`
+
+### 6. Pokretanje frontenda
+`$ npm run start`
