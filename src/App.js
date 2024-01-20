@@ -13,6 +13,7 @@ function App() {
   const [account, setAccount] = useState(null);
   const [tokenMaster, setTokenMaster] = useState(null);
   const [originalOccasions, setOriginalOccasions] = useState([]); 
+  const [occasions, setOccasions] = useState([]);
   const [toggle, setToggle] = useState(false);
   const [occasion, setOccasion] = useState({});
   const [cryptoData, setCryptoData] = useState(null);
@@ -35,15 +36,38 @@ function App() {
       occasions.push(occasion);
     }
 
+    //Pocetna lista dogadjaja
     setOriginalOccasions(occasions);
+    setOccasions(occasions);
+
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    const account = ethers.utils.getAddress(accounts[0]);
+    setAccount(account);
+
+    window.ethereum.on("accountsChanged", async () => {
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      const account = ethers.utils.getAddress(accounts[0]);
+      setAccount(account);
+    });
   };
 
   const handleCategoryClick = (category) => {
     switch (category) {
-      // ... existing code ...
+      case 'koncerti':
+        setOccasions(originalOccasions.filter((_, index) => [0, 3, 4].includes(index)));
+        break;
+      case 'pozoriste':
+        setOccasions(originalOccasions.filter((_, index) => [1].includes(index)));
+        break;
+      case 'sportskiDogađaji':
+        setOccasions(originalOccasions.filter((_, index) => [2].includes(index)));
+        break;
+      default:
+        
+        setOccasions(originalOccasions);
+        break;
     }
   };
-
   const loadCryptoData = async () => {
     const data = await getCryptoList();
     setCryptoData(data);
@@ -52,6 +76,7 @@ function App() {
   useEffect(() => {
     loadBlockchainData();
     loadCryptoData();
+    handleCategoryClick();
   }, []);
 
   return (
@@ -104,5 +129,4 @@ function App() {
     </div>
   );
 }
-
 export default App;

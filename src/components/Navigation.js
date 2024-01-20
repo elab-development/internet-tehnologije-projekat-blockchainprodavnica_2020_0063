@@ -1,24 +1,33 @@
+import React from 'react';
+import { ethers } from 'ethers';
 
-import { ethers } from 'ethers'
-
-
-const Navigation = ({ account, setAccount, handleCategoryClick }) => {
-
+const Navigation = ({
+  account,
+  setAccount,
+  handleCategoryClick,
+  handleSearchChange,
+}) => {
   const navigateToMainPage = () => {
     window.location.href = '/';
-  }
+  };
+
   const connectHandler = async () => {
-    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
-    const account = ethers.utils.getAddress(accounts[0])
-    setAccount(account)
-  }
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    const account = ethers.utils.getAddress(accounts[0]);
+    setAccount(account);
+  };
 
   return (
     <nav>
-      <div className='nav__brand' >
+      <div className='nav__brand'>
         <h1 onClick={navigateToMainPage}>tokenmaster</h1>
 
-        <input className='nav__search' type="text" placeholder='Karte za svakoga' />
+        <input
+          className='nav__search'
+          type="text"
+          placeholder='Karte za svakoga'
+          onChange={(e) => handleSearchChange(e.target.value)}
+        />
 
         <ul className='nav__links'>
           <li><a href="#" onClick={() => handleCategoryClick('koncerti')}>Koncerti</a></li>
@@ -45,6 +54,6 @@ const Navigation = ({ account, setAccount, handleCategoryClick }) => {
       )}
     </nav>
   );
-}
+};
 
 export default Navigation;

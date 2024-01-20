@@ -498,3 +498,49 @@ header {
     place-self: center;
   }
 }
+/* Dodaj ove stilove u tvoj CSS fajl */
+
+.cards-container {
+  
+  display: flex;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+/*Crypto*/
+.crypto-list {
+  width: 1000px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  margin-left: auto;
+}
+
+.crypto-list {
+  position: absolute;
+  top: 100;
+  right: 0;
+  width: 300px; /* Set a fixed width */
+  background-color: #fff;
+  border: 1px solid #dddddd;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+}
+
+.crypto-item {
+  border-bottom: 1px solid #ddd;
+  padding: 10px;
+  transition: background-color 0.6s ease; /* Smooth transition effect */
+}
+.crypto-item:hover {
+  background-color: #55d159; /* Green background color on hover */
+}
