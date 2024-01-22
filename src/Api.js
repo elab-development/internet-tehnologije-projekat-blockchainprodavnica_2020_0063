@@ -1,20 +1,26 @@
 // api.js
 import axios from 'axios';
 
-const BASE_URL = 'https://api.coingecko.com/api/v3';
+const BASE_URL = 'https://api.coinranking.com/v2';
+
+const COINRANKING_API_KEY = 'coinranking7a612f625d5d24898652dcfaa7d82bead0eb7b3893c724d0'; // Replace with your actual API key
 
 export const getCryptoList = async () => {
   try {
-    const response = await axios.get(`${BASE_URL}/coins/markets`, {
-      params: {
-        vs_currency: 'usd',
-        order: 'market_cap_desc',
-        per_page: 10, // Broj kriptovaluta koje uzimamo
-        page: 1,
-        sparkline: false,
+    const response = await axios.get(`${BASE_URL}/coins`, {
+      headers: {
+        'x-access-token': COINRANKING_API_KEY,
       },
     });
-    return response.data;
+
+    const cryptoList = response.data.data.coins.map((crypto) => ({
+      id: crypto.id,
+      name: crypto.name,
+      symbol: crypto.symbol,
+      usdPrice: crypto.price,
+    }));
+
+    return cryptoList;
   } catch (error) {
     console.error('Error fetching cryptocurrency list:', error);
     return null;

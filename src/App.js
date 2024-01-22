@@ -18,6 +18,7 @@ function App() {
   const [occasion, setOccasion] = useState({});
   const [cryptoData, setCryptoData] = useState(null);
   const { searchTerm, handleSearchChange, filteredOccasions } = useSearch(originalOccasions);
+  const [currentCategory, setCurrentCategory] = useState(null);
 
   const loadBlockchainData = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -36,7 +37,7 @@ function App() {
       occasions.push(occasion);
     }
 
-    //Pocetna lista dogadjaja
+    // Pocetna lista dogadjaja
     setOriginalOccasions(occasions);
     setOccasions(occasions);
 
@@ -51,31 +52,49 @@ function App() {
     });
   };
 
-  const handleCategoryClick = (category) => {
-    switch (category) {
-      case 'koncerti':
-        setOccasions(originalOccasions.filter((_, index) => [0, 3, 4].includes(index)));
-        break;
-      case 'pozoriste':
-        setOccasions(originalOccasions.filter((_, index) => [1].includes(index)));
-        break;
-      case 'sportskiDogađaji':
-        setOccasions(originalOccasions.filter((_, index) => [2].includes(index)));
-        break;
-      default:
-        
-        setOccasions(originalOccasions);
-        break;
+  const filterOccasions = () => {
+    let filteredData = occasions;
+
+    // Apply search filter
+    if (searchTerm) {
+      filteredData = filteredData.filter((occasion) =>
+        occasion.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
     }
+
+    // Apply category filter
+    if (currentCategory) {
+      switch (currentCategory) {
+        case 'koncerti':
+          filteredData = filteredData.filter((_, index) => [0, 3, 4].includes(index));
+          break;
+        case 'pozoriste':
+          filteredData = filteredData.filter((_, index) => [1].includes(index));
+          break;
+        case 'sportskiDogađaji':
+          filteredData = filteredData.filter((_, index) => [2].includes(index));
+          break;
+        default:
+          break;
+      }
+    }
+
+    return filteredData;
   };
+
+  const handleCategoryClick = (category) => {
+    setCurrentCategory(category);
+  };
+
   const loadCryptoData = async () => {
     const data = await getCryptoList();
     setCryptoData(data);
   };
 
   useEffect(() => {
+     loadCryptoData();
     loadBlockchainData();
-    loadCryptoData();
+   
     handleCategoryClick();
   }, []);
 
@@ -92,7 +111,7 @@ function App() {
       </header>
       <div className='cards-container'>
         <div className='cards'>
-          {filteredOccasions.map((occasion, index) => (
+          {filterOccasions().map((occasion, index) => (
             <Card
               occasion={occasion}
               id={index + 1}
@@ -115,18 +134,19 @@ function App() {
           )}
         </div>
         {cryptoData && (
-          <div className='crypto-list'>
-            <h2>Kurs kriptovaluta</h2>
-            {cryptoData.map((crypto) => (
-              <div key={crypto.id} className='crypto-item'>
-                <p>{crypto.name}</p>
-                <p>{crypto.current_price} USD</p>
-              </div>
-            ))}
-          </div>
-        )}
+        <div className='crypto-list'>
+          <h2>Kurs kriptovaluta</h2>
+          {cryptoData.slice(0, 10).map((crypto) => (
+            <div key={crypto.id} className='crypto-item'>
+              <p>{crypto.name}</p>
+              <p>{crypto.usdPrice} USD</p>
+            </div>
+          ))}
+        </div>
+      )}
       </div>
     </div>
   );
 }
+
 export default App;

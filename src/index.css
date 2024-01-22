@@ -528,7 +528,7 @@ header {
   position: absolute;
   top: 100;
   right: 0;
-  width: 300px; /* Set a fixed width */
+  width: 500px; /* Set a fixed width */
   background-color: #fff;
   border: 1px solid #dddddd;
   border-radius: 10px;
