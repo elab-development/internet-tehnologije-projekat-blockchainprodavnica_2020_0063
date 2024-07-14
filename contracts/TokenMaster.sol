@@ -6,6 +6,7 @@ contract TokenMaster is ERC721 {
     address public owner;
     uint256 public totalOccasions;
     uint256 public totalSupply;
+
     struct Occasion {
         uint256 id;
         string name;
@@ -17,13 +18,22 @@ contract TokenMaster is ERC721 {
         string location;
     }
 
+    struct Purchase {
+        address buyer;
+        uint256 occasionId;
+        uint256 seat;
+        uint256 amount;
+    }
+
+    Purchase public lastPurchase;
+
     mapping(uint256 => Occasion) occasions;
     mapping(uint256 => mapping(address => bool)) public hasBought;
     mapping(uint256 => mapping(uint256 => address)) public seatTaken;
     mapping(uint256 => uint256[]) seatsTaken;
 
     modifier onlyOwner() {
-        require(msg.sender == owner);
+        require(msg.sender == owner, "Only the owner can call this function");
         _;
     }
 
@@ -56,20 +66,65 @@ contract TokenMaster is ERC721 {
     }
 
     function mint(uint256 _id, uint256 _seat) public payable {
-        //Uslovi da id nije 0 ili manje od ukupnih dogadjaja
-        require(_id != 0);
-        require(_id <= totalOccasions);
-        //Uslov da ETH koji je poslat je veci ili jednak ceni
-        require(msg.value >= occasions[_id].cost);
-        // Uslov da mesto nije zauzeto, i da postoji
-        require(seatTaken[_id][_seat] == address(0));
-        require(_seat <= occasions[_id].maxTickets);
-        occasions[_id].tickets -= 1; //Smanjujemo broj karata
-        hasBought[_id][msg.sender] = true; //Azuriranje statusa da je kupljeno
-        seatTaken[_id][_seat] = msg.sender; //Zauzimamo mesto
-        seatsTaken[_id].push(_seat); //Azuriranje zauzetih mesta
+        require(_id != 0, "Invalid occasion ID");
+        require(_id <= totalOccasions, "Occasion does not exist");
+        require(msg.value >= occasions[_id].cost, "Insufficient ETH sent");
+        require(seatTaken[_id][_seat] == address(0), "Seat already taken");
+        require(
+            _seat <= occasions[_id].maxTickets,
+            "Seat number exceeds max tickets"
+        );
+
+        occasions[_id].tickets -= 1;
+        hasBought[_id][msg.sender] = true;
+        seatTaken[_id][_seat] = msg.sender;
+        seatsTaken[_id].push(_seat);
+
+        lastPurchase = Purchase(msg.sender, _id, _seat, msg.value);
+
         totalSupply++;
         _safeMint(msg.sender, totalSupply);
+    }
+
+    function refund() public {
+        require(
+            lastPurchase.buyer == msg.sender,
+            "You are not the buyer of the last purchase"
+        );
+
+        uint256 occasionId = lastPurchase.occasionId;
+        uint256 seat = lastPurchase.seat;
+        uint256 amount = lastPurchase.amount;
+
+        require(
+            seatTaken[occasionId][seat] == msg.sender,
+            "You do not own this seat"
+        );
+
+        // Mark the seat as available
+        seatTaken[occasionId][seat] = address(0);
+        hasBought[occasionId][msg.sender] = false;
+        occasions[occasionId].tickets += 1;
+
+        // Remove seat from the taken seats array
+        uint256[] storage seats = seatsTaken[occasionId];
+        for (uint256 i = 0; i < seats.length; i++) {
+            if (seats[i] == seat) {
+                seats[i] = seats[seats.length - 1];
+                seats.pop();
+                break;
+            }
+        }
+
+        // Refund the buyer
+        (bool success, ) = msg.sender.call{value: amount}("");
+        require(success, "Refund failed");
+
+        // Burn the NFT
+        _burn(totalSupply);
+
+        totalSupply--;
+        delete lastPurchase;
     }
 
     function getOccasion(uint256 _id) public view returns (Occasion memory) {
@@ -82,6 +137,6 @@ contract TokenMaster is ERC721 {
 
     function withdraw() public onlyOwner {
         (bool success, ) = owner.call{value: address(this).balance}("");
-        require(success);
+        require(success, "Withdrawal failed");
     }
 }

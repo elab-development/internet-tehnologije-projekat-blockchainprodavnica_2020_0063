@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 import Navigation from './components/Navigation';
 import Card from './components/Card';
 import SeatChart from './components/SeatChart';
+import RefundButton from './components/RefundButton';
 import TokenMaster from './abis/TokenMaster.json';
 import config from './config.json';
 import { getCryptoList } from './Api.js';
@@ -92,10 +93,8 @@ function App() {
   };
 
   useEffect(() => {
-     loadCryptoData();
+    loadCryptoData();
     loadBlockchainData();
-   
-    handleCategoryClick();
   }, []);
 
   return (
@@ -133,17 +132,18 @@ function App() {
             />
           )}
         </div>
+        <RefundButton provider={provider} tokenMaster={tokenMaster} />
         {cryptoData && (
-        <div className='crypto-list'>
-          <h2>Kurs kriptovaluta</h2>
-          {cryptoData.slice(0, 10).map((crypto) => (
-            <div key={crypto.id} className='crypto-item'>
-              <p>{crypto.name}</p>
-              <p>{crypto.usdPrice} USD</p>
-            </div>
-          ))}
-        </div>
-      )}
+          <div className='crypto-list'>
+            <h2>Kurs kriptovaluta</h2>
+            {cryptoData.slice(0, 10).map((crypto) => (
+              <div key={crypto.id} className='crypto-item'>
+                <p>{crypto.name}</p>
+                <p>{crypto.usdPrice} USD</p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
