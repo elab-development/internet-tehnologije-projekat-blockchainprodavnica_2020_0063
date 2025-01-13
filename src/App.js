@@ -1,24 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { ethers } from 'ethers';
-import Navigation from './components/Navigation';
-import Card from './components/Card';
-import SeatChart from './components/SeatChart';
-import RefundButton from './components/RefundButton';
-import TokenMaster from './abis/TokenMaster.json';
-import config from './config.json';
-import { getCryptoList } from './Api.js';
-import useSearch from './useSearch';
+import React, { useEffect, useState } from "react";
+import { ethers } from "ethers";
+import Navigation from "./components/Navigation";
+import Card from "./components/Card";
+import SeatChart from "./components/SeatChart";
+import RefundButton from "./components/RefundButton";
+import TokenMaster from "./abis/TokenMaster.json";
+import config from "./config.json";
+import { getCryptoList } from "./Api.js";
+import useSearch from "./useSearch";
 
 function App() {
   const [provider, setProvider] = useState(null);
   const [account, setAccount] = useState(null);
   const [tokenMaster, setTokenMaster] = useState(null);
-  const [originalOccasions, setOriginalOccasions] = useState([]); 
+  const [originalOccasions, setOriginalOccasions] = useState([]);
   const [occasions, setOccasions] = useState([]);
   const [toggle, setToggle] = useState(false);
   const [occasion, setOccasion] = useState({});
   const [cryptoData, setCryptoData] = useState(null);
-  const { searchTerm, handleSearchChange, filteredOccasions } = useSearch(originalOccasions);
+  const { searchTerm, handleSearchChange, filteredOccasions } =
+    useSearch(originalOccasions);
   const [currentCategory, setCurrentCategory] = useState(null);
 
   const loadBlockchainData = async () => {
@@ -27,6 +28,7 @@ function App() {
 
     const network = await provider.getNetwork();
     const address = config[network.chainId].TokenMaster.address;
+    console.log(address);
     const tokenMaster = new ethers.Contract(address, TokenMaster, provider);
     setTokenMaster(tokenMaster);
 
@@ -42,12 +44,16 @@ function App() {
     setOriginalOccasions(occasions);
     setOccasions(occasions);
 
-    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    const accounts = await window.ethereum.request({
+      method: "eth_requestAccounts",
+    });
     const account = ethers.utils.getAddress(accounts[0]);
     setAccount(account);
 
     window.ethereum.on("accountsChanged", async () => {
-      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      const accounts = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
       const account = ethers.utils.getAddress(accounts[0]);
       setAccount(account);
     });
@@ -66,13 +72,15 @@ function App() {
     // Apply category filter
     if (currentCategory) {
       switch (currentCategory) {
-        case 'koncerti':
-          filteredData = filteredData.filter((_, index) => [0, 3, 4].includes(index));
+        case "koncerti":
+          filteredData = filteredData.filter((_, index) =>
+            [0, 3, 4].includes(index)
+          );
           break;
-        case 'pozoriste':
+        case "pozoriste":
           filteredData = filteredData.filter((_, index) => [1].includes(index));
           break;
-        case 'sportskiDogađaji':
+        case "sportskiDogađaji":
           filteredData = filteredData.filter((_, index) => [2].includes(index));
           break;
         default:
@@ -106,10 +114,12 @@ function App() {
           handleCategoryClick={handleCategoryClick}
           handleSearchChange={handleSearchChange}
         />
-        <h2 className='header__title'><strong>Karte</strong> za sve</h2>
+        <h2 className="header__title">
+          <strong>Karte</strong> za sve
+        </h2>
       </header>
-      <div className='cards-container'>
-        <div className='cards'>
+      <div className="cards-container">
+        <div className="cards">
           {filterOccasions().map((occasion, index) => (
             <Card
               occasion={occasion}
@@ -134,10 +144,10 @@ function App() {
         </div>
         <RefundButton provider={provider} tokenMaster={tokenMaster} />
         {cryptoData && (
-          <div className='crypto-list'>
+          <div className="crypto-list">
             <h2>Kurs kriptovaluta</h2>
             {cryptoData.slice(0, 10).map((crypto) => (
-              <div key={crypto.id} className='crypto-item'>
+              <div key={crypto.id} className="crypto-item">
                 <p>{crypto.name}</p>
                 <p>{crypto.usdPrice} USD</p>
               </div>

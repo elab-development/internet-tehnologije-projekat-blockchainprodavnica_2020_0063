@@ -1,5 +1,7 @@
 pragma solidity ^0.8.9;
 
+// SPDX Licence-Identifier: MIT
+
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 contract TokenMaster is ERC721 {
@@ -13,7 +15,7 @@ contract TokenMaster is ERC721 {
         uint256 cost;
         uint256 tickets;
         uint256 maxTickets;
-        string date;
+        uint256 eventTimestamp; // Dodaj UNIX timestamp za događaj
         string time;
         string location;
     }
@@ -48,7 +50,7 @@ contract TokenMaster is ERC721 {
         string memory _name,
         uint256 _cost,
         uint256 _maxTickets,
-        string memory _date,
+        uint256 _eventTimestamp,
         string memory _time,
         string memory _location
     ) public onlyOwner {
@@ -59,7 +61,7 @@ contract TokenMaster is ERC721 {
             _cost,
             _maxTickets,
             _maxTickets,
-            _date,
+            _eventTimestamp,
             _time,
             _location
         );
@@ -101,6 +103,21 @@ contract TokenMaster is ERC721 {
             "You do not own this seat"
         );
 
+        uint256 currentTime = block.timestamp;
+        uint256 eventTime = occasions[occasionId].eventTimestamp;
+        uint256 refundAmount = 0;
+
+        // Refund logic based on days before the event
+        if (currentTime > eventTime) {
+            revert("Cannot refund after the event");
+        } else if (eventTime - currentTime > 30 days) {
+            refundAmount = amount; // Full refund
+        } else if (eventTime - currentTime > 15 days) {
+            refundAmount = amount / 2; // 50% refund
+        } else {
+            revert("Refund not allowed within 15 days of the event");
+        }
+
         // Mark the seat as available
         seatTaken[occasionId][seat] = address(0);
         hasBought[occasionId][msg.sender] = false;
@@ -116,8 +133,8 @@ contract TokenMaster is ERC721 {
             }
         }
 
-        // Refund the buyer
-        (bool success, ) = msg.sender.call{value: amount}("");
+        // Refund the calculated amount
+        (bool success, ) = msg.sender.call{value: refundAmount}("");
         require(success, "Refund failed");
 
         // Burn the NFT

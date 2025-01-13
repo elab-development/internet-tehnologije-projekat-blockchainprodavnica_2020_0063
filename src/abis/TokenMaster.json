@@ -184,9 +184,9 @@
             "type": "uint256"
           },
           {
-            "internalType": "string",
-            "name": "date",
-            "type": "string"
+            "internalType": "uint256",
+            "name": "eventTimestamp",
+            "type": "uint256"
           },
           {
             "internalType": "string",
@@ -320,9 +320,9 @@
         "type": "uint256"
       },
       {
-        "internalType": "string",
-        "name": "_date",
-        "type": "string"
+        "internalType": "uint256",
+        "name": "_eventTimestamp",
+        "type": "uint256"
       },
       {
         "internalType": "string",

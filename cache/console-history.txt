@@ -1,0 +1,7 @@
+console.log("Galija occasion:", galija);
+const galija = await tokenMaster.getOccasion(5);
+const totalOccasions = await tokenMaster.console.log("Total occasions:", totalOccasions.toString());
+const tokenMaster = await ethers.getContractAt("TokenMaster", "0x59b670e9fA9D0A427751Af201D676719a970857b");
+.break
+break
+.help

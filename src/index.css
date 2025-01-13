@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Poiret+One&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Poiret+One&display=swap");
 
 * {
   margin: 0;
@@ -7,7 +7,7 @@
 }
 
 :root {
-  --clr-white: #FFFFFF;
+  --clr-white: #ffffff;
   --clr-black: #000000;
   --clr-grey: #2b2727;
   --clr-grey-2: #2b2727;
@@ -54,7 +54,7 @@ nav {
 .nav__brand h1 {
   color: var(--clr-white);
   font-family: "Poiret One";
-  font-size: 1.50em;
+  font-size: 1.5em;
   font-style: italic;
   margin-right: 10px;
 }
@@ -116,7 +116,7 @@ nav {
   border: none;
   border-radius: 4px;
   font-family: "Open Sans";
-  font-size: 1.10em;
+  font-size: 1.1em;
   font-weight: 600;
   cursor: pointer;
   transition: all 250ms ease;
@@ -128,7 +128,13 @@ nav {
 
 /* Header styles */
 header {
-  background-image: linear-gradient(45deg, var(--clr-dark-green) 10%, var(--clr-light-green) 20%, var(--clr-dark-green) 50%, var(--clr-light-green) 120%);
+  background-image: linear-gradient(
+    45deg,
+    var(--clr-dark-green) 10%,
+    var(--clr-light-green) 20%,
+    var(--clr-dark-green) 50%,
+    var(--clr-light-green) 120%
+  );
   background-size: contain;
   background-position: right;
   background-repeat: no-repeat;
@@ -174,7 +180,7 @@ header {
 }
 
 .card__info p small {
-  font-size: clamp(0.80rem, 2vw, 0.90rem);
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
 }
 
 .card__info p small span {
@@ -195,7 +201,7 @@ header {
   place-self: center;
   align-self: end;
   font-family: "Open Sans";
-  font-size: clamp(0.90rem, 3vw, 1.10rem);
+  font-size: clamp(0.9rem, 3vw, 1.1rem);
   font-weight: 600;
   text-align: center;
 }
@@ -214,13 +220,13 @@ header {
   grid-column: 9 / span 1;
   grid-row: 1 / span 2;
   place-self: center;
-  font-size: clamp(1rem, 3vw, 1.10rem);
+  font-size: clamp(1rem, 3vw, 1.1rem);
   font-weight: 300;
 }
 
 .card__cost strong {
   font-family: "Open Sans";
-  font-size: clamp(1.10rem, 3vw, 1.50rem);
+  font-size: clamp(1.1rem, 3vw, 1.5rem);
   font-weight: 700;
   margin: 0;
 }
@@ -253,7 +259,7 @@ header {
 }
 
 .card__button--out {
-  background-color: #BA1840;
+  background-color: #ba1840;
 }
 
 .card hr {
@@ -275,7 +281,11 @@ header {
   display: grid;
   gap: 5px;
   grid-template-columns: repeat(25, 1fr);
-  background: linear-gradient(to bottom, var(--clr-light-green), var(--clr-white) 75%);
+  background: linear-gradient(
+    to bottom,
+    var(--clr-light-green),
+    var(--clr-white) 75%
+  );
   border: 10px solid var(--clr-grey);
   border-radius: 8px;
   width: 90%;
@@ -498,4 +508,51 @@ header {
 
 .refund-button-container button:hover {
   background-color: #c4451c;
+}
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup__content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+}
+
+.popup__qr {
+  margin: 20px 0;
+}
+
+.popup__close {
+  background: #d9534f;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.popup__close:hover {
+  background: #c9302c;
+}
+.popup__download {
+  background: #4f78d9;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
 }
