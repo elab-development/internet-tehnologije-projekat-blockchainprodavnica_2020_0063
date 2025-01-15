@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import Navigation from "./components/Navigation";
 import Card from "./components/Card";
 import SeatChart from "./components/SeatChart";
-import RefundButton from "./components/RefundButton";
+import RefundModal from "./components/RefundModal"; // Import RefundModal
 import TokenMaster from "./abis/TokenMaster.json";
 import config from "./config.json";
 import { getCryptoList } from "./Api.js";
@@ -18,6 +18,7 @@ function App() {
   const [toggle, setToggle] = useState(false);
   const [occasion, setOccasion] = useState({});
   const [cryptoData, setCryptoData] = useState(null);
+  const [showRefundModal, setShowRefundModal] = useState(false);
   const { searchTerm, handleSearchChange, filteredOccasions } =
     useSearch(originalOccasions);
   const [currentCategory, setCurrentCategory] = useState(null);
@@ -37,10 +38,12 @@ function App() {
 
     for (let index = 1; index <= totalOccasions; index++) {
       const occasion = await tokenMaster.getOccasion(index);
-      occasions.push(occasion);
+      occasions.push({
+        id: index,
+        ...occasion,
+      });
     }
 
-    // Pocetna lista dogadjaja
     setOriginalOccasions(occasions);
     setOccasions(occasions);
 
@@ -62,26 +65,28 @@ function App() {
   const filterOccasions = () => {
     let filteredData = occasions;
 
-    // Apply search filter
     if (searchTerm) {
       filteredData = filteredData.filter((occasion) =>
         occasion.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
-    // Apply category filter
     if (currentCategory) {
       switch (currentCategory) {
         case "koncerti":
           filteredData = filteredData.filter((_, index) =>
-            [0, 3, 4].includes(index)
+            [0, 2, 3, 4, 5].includes(index)
           );
           break;
         case "pozoriste":
-          filteredData = filteredData.filter((_, index) => [1].includes(index));
+          filteredData = filteredData.filter((_, index) =>
+            [1, 8].includes(index)
+          );
           break;
         case "sportskiDogađaji":
-          filteredData = filteredData.filter((_, index) => [2].includes(index));
+          filteredData = filteredData.filter((_, index) =>
+            [6, 7].includes(index)
+          );
           break;
         default:
           break;
@@ -142,7 +147,20 @@ function App() {
             />
           )}
         </div>
-        <RefundButton provider={provider} tokenMaster={tokenMaster} />
+        <button
+          className="refund-button"
+          onClick={() => setShowRefundModal(true)}
+        >
+          Refundacije
+        </button>
+        {showRefundModal && (
+          <RefundModal
+            tokenMaster={tokenMaster}
+            provider={provider}
+            userAddress={account}
+            onClose={() => setShowRefundModal(false)}
+          />
+        )}
         {cryptoData && (
           <div className="crypto-list">
             <h2>Kurs kriptovaluta</h2>

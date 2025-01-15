@@ -13,9 +13,9 @@ contract TokenMaster is ERC721 {
         uint256 id;
         string name;
         uint256 cost;
-        uint256 tickets;
         uint256 maxTickets;
-        uint256 eventTimestamp; // Dodaj UNIX timestamp za događaj
+        uint256 ticketsSold;
+        uint256 eventTimestamp;
         string time;
         string location;
     }
@@ -27,12 +27,11 @@ contract TokenMaster is ERC721 {
         uint256 amount;
     }
 
-    Purchase public lastPurchase;
-
-    mapping(uint256 => Occasion) occasions;
+    mapping(uint256 => Occasion) public occasions;
     mapping(uint256 => mapping(address => bool)) public hasBought;
     mapping(uint256 => mapping(uint256 => address)) public seatTaken;
     mapping(uint256 => uint256[]) seatsTaken;
+    mapping(address => uint256[]) public userPurchases;
 
     modifier onlyOwner() {
         require(msg.sender == owner, "Only the owner can call this function");
@@ -60,7 +59,7 @@ contract TokenMaster is ERC721 {
             _name,
             _cost,
             _maxTickets,
-            _maxTickets,
+            0, // ticketsSold starts at 0
             _eventTimestamp,
             _time,
             _location
@@ -73,60 +72,52 @@ contract TokenMaster is ERC721 {
         require(msg.value >= occasions[_id].cost, "Insufficient ETH sent");
         require(seatTaken[_id][_seat] == address(0), "Seat already taken");
         require(
-            _seat <= occasions[_id].maxTickets,
-            "Seat number exceeds max tickets"
+            occasions[_id].ticketsSold < occasions[_id].maxTickets,
+            "All tickets sold"
         );
 
-        occasions[_id].tickets -= 1;
+        // Update ticket sales
+        occasions[_id].ticketsSold++;
         hasBought[_id][msg.sender] = true;
         seatTaken[_id][_seat] = msg.sender;
         seatsTaken[_id].push(_seat);
-
-        lastPurchase = Purchase(msg.sender, _id, _seat, msg.value);
+        userPurchases[msg.sender].push(_id);
 
         totalSupply++;
         _safeMint(msg.sender, totalSupply);
     }
 
-    function refund() public {
+    function refund(uint256 _id, uint256 _seat) public {
+        require(hasBought[_id][msg.sender], "You have not bought this ticket");
         require(
-            lastPurchase.buyer == msg.sender,
-            "You are not the buyer of the last purchase"
-        );
-
-        uint256 occasionId = lastPurchase.occasionId;
-        uint256 seat = lastPurchase.seat;
-        uint256 amount = lastPurchase.amount;
-
-        require(
-            seatTaken[occasionId][seat] == msg.sender,
+            seatTaken[_id][_seat] == msg.sender,
             "You do not own this seat"
         );
 
         uint256 currentTime = block.timestamp;
-        uint256 eventTime = occasions[occasionId].eventTimestamp;
-        uint256 refundAmount = 0;
+        uint256 eventTime = occasions[_id].eventTimestamp;
+        uint256 refundAmount = occasions[_id].cost;
 
         // Refund logic based on days before the event
         if (currentTime > eventTime) {
             revert("Cannot refund after the event");
         } else if (eventTime - currentTime > 30 days) {
-            refundAmount = amount; // Full refund
+            refundAmount = occasions[_id].cost; // Full refund
         } else if (eventTime - currentTime > 15 days) {
-            refundAmount = amount / 2; // 50% refund
+            refundAmount = occasions[_id].cost / 2; // 50% refund
         } else {
             revert("Refund not allowed within 15 days of the event");
         }
 
-        // Mark the seat as available
-        seatTaken[occasionId][seat] = address(0);
-        hasBought[occasionId][msg.sender] = false;
-        occasions[occasionId].tickets += 1;
+        // Update ticket sales
+        occasions[_id].ticketsSold--;
+        seatTaken[_id][_seat] = address(0);
+        hasBought[_id][msg.sender] = false;
 
         // Remove seat from the taken seats array
-        uint256[] storage seats = seatsTaken[occasionId];
+        uint256[] storage seats = seatsTaken[_id];
         for (uint256 i = 0; i < seats.length; i++) {
-            if (seats[i] == seat) {
+            if (seats[i] == _seat) {
                 seats[i] = seats[seats.length - 1];
                 seats.pop();
                 break;
@@ -136,20 +127,20 @@ contract TokenMaster is ERC721 {
         // Refund the calculated amount
         (bool success, ) = msg.sender.call{value: refundAmount}("");
         require(success, "Refund failed");
-
-        // Burn the NFT
-        _burn(totalSupply);
-
-        totalSupply--;
-        delete lastPurchase;
     }
 
     function getOccasion(uint256 _id) public view returns (Occasion memory) {
         return occasions[_id];
     }
 
-    function getSeatsTaken(uint _id) public view returns (uint256[] memory) {
+    function getSeatsTaken(uint256 _id) public view returns (uint256[] memory) {
         return seatsTaken[_id];
+    }
+
+    function getUserPurchases(
+        address _user
+    ) public view returns (uint256[] memory) {
+        return userPurchases[_user];
     }
 
     function withdraw() public onlyOwner {
