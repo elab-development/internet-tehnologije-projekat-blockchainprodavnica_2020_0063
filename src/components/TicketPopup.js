@@ -1,56 +1,67 @@
-import React, { useRef } from "react";
 import { QRCodeCanvas } from "qrcode.react";
-import jsPDF from "jspdf";
+import { jsPDF } from "jspdf";
+import { useRef } from "react";
 
-const TicketPopup = ({ occasion, seat, qrData, onClose }) => {
-  const qrRef = useRef();
+const TicketPopup = ({ occasion, seat, ticketString, onClose }) => {
+  // Ref za QR (da bismo dohvatili <canvas> i pretvorili u sliku)
+  const qrRef = useRef(null);
 
-  const downloadPDF = () => {
-    const doc = new jsPDF();
+  // Klik na "Preuzmi PDF"
+  const handleDownloadPDF = () => {
+    if (!ticketString) return;
 
-    // Dodavanje detalja na PDF
-    doc.text("Vaša Ulaznica", 10, 10);
-    doc.text(`Dogadjaj: ${occasion.name}`, 10, 20);
-    doc.text(`Datum: ${occasion.date} u ${occasion.time}`, 10, 30);
-    doc.text(`Lokacija: ${occasion.location}`, 10, 40);
-    doc.text(`Broj sedišta: ${seat}`, 10, 50);
+    const doc = new jsPDF("p", "pt", "a4");
+    // "pt" -> points, "a4" -> 595x842pt otprilike
 
-    // Preuzimanje QR koda kao sliku iz ref-a
-    const qrCanvas = qrRef.current.querySelector("canvas");
-    const qrImage = qrCanvas.toDataURL("image/png");
+    const fileName = `Ticket_${occasion.name}_Seat_${seat}.pdf`;
 
-    // Dodavanje QR koda na PDF
-    doc.addImage(qrImage, "PNG", 10, 60, 50, 50);
+    // Dohvatimo <canvas> iz <div ref={qrRef}>
+    const qrCanvas = qrRef.current?.querySelector("canvas");
+    let qrDataUrl = "";
+    if (qrCanvas) {
+      qrDataUrl = qrCanvas.toDataURL("image/png");
+    }
 
-    // Preuzimanje PDF-a
-    doc.save(`Ticket_${occasion.name}_Seat_${seat}.pdf`);
+    // Napišemo nešto na PDF
+    doc.setFont("Helvetica", "normal");
+    doc.setFontSize(18);
+    doc.text(`Ulaznica za dogadjaj: ${occasion.name}`, 40, 60);
+
+    doc.setFontSize(14);
+    doc.text(`Sedište: ${seat}`, 40, 90);
+    doc.text(`Datum: ${occasion.date || "Nepoznat datum"}`, 40, 110);
+    doc.text(`Lokacija: ${occasion.location || "Nepoznata"}`, 40, 130);
+
+    // Možemo ubaciti i ceo ticketString
+    doc.text(ticketString, 40, 160, { maxWidth: 500 });
+
+    // Sada QR kod "niže" (npr. Y=420 da bude ispod teksta)
+    if (qrDataUrl) {
+      doc.addImage(qrDataUrl, "PNG", 40, 420, 150, 150);
+    }
+
+    doc.save(fileName);
   };
 
   return (
-    <div className="popup">
-      <div className="popup__content">
-        <h2>Vaša Ulaznica</h2>
+    <div className="ticket-popup">
+      <div className="ticket-popup__content">
+        <button className="close-button" onClick={onClose}>
+          &times;
+        </button>
+        <h2>{occasion.name}</h2>
         <p>
-          <strong>Događaj:</strong> {occasion.name}
+          <strong>Sedište:</strong> {seat}
         </p>
-        <p>
-          <strong>Datum:</strong> {occasion.date} u {occasion.time}
-        </p>
-        <p>
-          <strong>Lokacija:</strong> {occasion.location}
-        </p>
-        <p>
-          <strong>Broj sedišta:</strong> {seat}
-        </p>
-        <div className="popup__qr" ref={qrRef}>
-          <QRCodeCanvas value={qrData} size={200} />
+        {/* Ovde možemo prikazati sav tekstualni opis */}
+        <pre>{ticketString}</pre>
+
+        {/* QR kod, niže u kodu -> unutar diva s ref */}
+        <div className="ticket-popup__qr" ref={qrRef}>
+          <QRCodeCanvas value={ticketString} size={200} />
         </div>
-        <button className="popup__download" onClick={downloadPDF}>
-          Preuzmi kao PDF
-        </button>
-        <button className="popup__close" onClick={onClose}>
-          Zatvori
-        </button>
+
+        <button onClick={handleDownloadPDF}>Preuzmi kartu (PDF)</button>
       </div>
     </div>
   );

@@ -486,52 +486,105 @@ header {
 .crypto-item:hover {
   background-color: #55d159; /* Green background color on hover */
 }
-.popup {
+/* Glavni kontejner za popup (overlay) */
+/* Glavni overlay da potamni pozadinu */
+.ticket-popup {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  inset: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.5); /* poluprovidna crna */
+  z-index: 9999;
+  font-family: "Roboto", sans-serif; /* primer fonta */
 }
 
-.popup__content {
-  background: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-  width: 90%;
-  max-width: 400px;
+/* Bela (ili blago siva) „kartica“ u sredini */
+.ticket-popup__content {
   position: relative;
+  background: linear-gradient(135deg, #ffffff, #f2f2f2); /* blag gradijent */
+  border-radius: 12px;
+  padding: 30px 40px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  animation: popup-appear 0.3s ease-out; /* animacija iskakanja */
 }
 
-.popup__qr {
+/* Animacija blagog fade-in/slide-up */
+@keyframes popup-appear {
+  0% {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Dugme za zatvaranje (X) gore desno */
+.close-button {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  line-height: 1;
+  color: #333;
+  cursor: pointer;
+}
+
+/* Naslov */
+.ticket-popup__content h2 {
+  margin-bottom: 10px;
+  font-size: 24px;
+  color: #444;
+}
+
+/* Običan tekst */
+.ticket-popup__content p {
+  font-size: 16px;
+  color: #555;
+}
+
+/* Za veći blok teksta – ticketString */
+.ticket-popup__content pre {
+  background: #fff;
+  text-align: left;
+  padding: 10px;
+  margin: 15px 0;
+  max-height: 200px;
+  overflow-y: auto;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  color: #333;
+}
+
+/* QR kontejner – samo margine */
+.ticket-popup__qr {
   margin: 20px 0;
 }
 
-.popup__close {
-  background: #d9534f;
+/* Dugme za Preuzmi kartu (PDF) */
+.ticket-popup__content button {
+  display: inline-block;
+  padding: 12px 24px;
+  margin-top: 10px;
+  background: #0062cc;
   color: #fff;
+  border-radius: 6px;
   border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
   cursor: pointer;
+  font-size: 15px;
+  transition: background 0.2s ease-in-out;
 }
 
-.popup__close:hover {
-  background: #c9302c;
-}
-.popup__download {
-  background: #4f78d9;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
+.ticket-popup__content button:hover {
+  background: #0051a1;
 }
 
 /* Refund Button */

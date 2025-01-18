@@ -7,56 +7,72 @@ import close from "../assets/close.svg";
 const SeatChart = ({ occasion, tokenMaster, provider, setToggle }) => {
   const [seatsTaken, setSeatsTaken] = useState(false);
   const [hasSold, setHasSold] = useState(false);
-  const [qrData, setQrData] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
   const [ticketDetails, setTicketDetails] = useState(null);
 
+  // Učitavanje zauzetih sedišta
   const getSeatsTaken = async () => {
     const seatsTaken = await tokenMaster.getSeatsTaken(occasion.id);
     setSeatsTaken(seatsTaken);
   };
 
-  const buyHandler = async (_seat) => {
-    setHasSold(false);
-    const signer = await provider.getSigner();
-    const transaction = await tokenMaster
-      .connect(signer)
-      .mint(occasion.id, _seat, { value: occasion.cost });
-    await transaction.wait();
-
-    const qrInfo = {
-      occasionId: occasion.id,
-      seat: _seat,
-      name: occasion.name,
-      date: occasion.date,
-      time: occasion.time,
-      location: occasion.location,
-      owner: await signer.getAddress(),
-    };
-
-    setTicketDetails({
-      occasion,
-      seat: _seat,
-      qrData: JSON.stringify(qrInfo),
-    });
-
-    setShowPopup(true);
-    setHasSold(true);
-  };
-
-  const downloadTicket = () => {
-    const element = document.createElement("a");
-    const file = new Blob([ticketDetails.qrData], { type: "text/plain" });
-    element.href = URL.createObjectURL(file);
-    element.download = `Ticket_${ticketDetails.occasion.name}_Seat_${ticketDetails.seat}.txt`;
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-  };
-
   useEffect(() => {
     getSeatsTaken();
   }, [hasSold]);
+
+  // Formatiranje UNIX timestampa u dd/mm/yyyy
+  const formatDate = (timestamp) => {
+    if (!timestamp) return "Nepoznat datum";
+    const date = new Date(timestamp * 1000);
+    if (isNaN(date.getTime())) return "Nepoznat datum";
+
+    const dd = String(date.getDate()).padStart(2, "0");
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const yyyy = date.getFullYear();
+    return `${dd}/${mm}/${yyyy}`;
+  };
+
+  // Kupovina karte za konkretno sedište
+  const buyHandler = async (_seat) => {
+    try {
+      setHasSold(false);
+
+      const signer = await provider.getSigner();
+      const transaction = await tokenMaster
+        .connect(signer)
+        .mint(occasion.id, _seat, { value: occasion.cost });
+      await transaction.wait();
+
+      // Kreiramo tekstualne podatke "ko čovek"
+      const eventDate = formatDate(occasion.eventTimestamp);
+      const owner = await signer.getAddress();
+
+      const ticketString = `
+*** Ulaznica za dogadjaj ***
+Naziv:     ${occasion.name}
+Datum:     ${eventDate}
+Vreme:     ${occasion.time}
+Lokacija:  ${occasion.location}
+Sedište:   ${_seat}
+Vlasnik:   ${owner}
+---------------------------
+`.trim();
+
+      setTicketDetails({
+        occasion: {
+          ...occasion,
+          date: eventDate, // Ako želiš da gde god inače prikazuješ, bude formatiran
+        },
+        seat: _seat,
+        ticketString, // Sve "ljudski" spremljeno
+      });
+
+      setShowPopup(true);
+      setHasSold(true);
+    } catch (error) {
+      console.error("Greška pri kupovini karte:", error);
+    }
+  };
 
   return (
     <div className="occasion">
@@ -71,6 +87,7 @@ const SeatChart = ({ occasion, tokenMaster, provider, setToggle }) => {
           <strong>BINA</strong>
         </div>
 
+        {/* Prvi blok sedišta (25 komada) */}
         {seatsTaken &&
           Array(25)
             .fill(1)
@@ -92,6 +109,7 @@ const SeatChart = ({ occasion, tokenMaster, provider, setToggle }) => {
           <strong>Prolaz</strong>
         </div>
 
+        {/* Srednji blok sedišta */}
         {seatsTaken &&
           Array(Number(occasion.maxTickets) - 50)
             .fill(1)
@@ -113,6 +131,7 @@ const SeatChart = ({ occasion, tokenMaster, provider, setToggle }) => {
           <strong>Prolaz</strong>
         </div>
 
+        {/* Treći blok sedišta (opet 25 komada) */}
         {seatsTaken &&
           Array(25)
             .fill(1)
@@ -129,22 +148,14 @@ const SeatChart = ({ occasion, tokenMaster, provider, setToggle }) => {
                 key={i}
               />
             ))}
-        {qrData && (
-          <div className="occasion__qr">
-            <h2>Vaša ulaznica</h2>
-            <QRCodeCanvas value={qrData} size={256} />
-            <button className="download-button" onClick={downloadTicket}>
-              Preuzmi ulaznicu
-            </button>
-          </div>
-        )}
       </div>
 
-      {showPopup && (
+      {/* Popup za prikaz kupljene karte i preuzimanje PDF-a */}
+      {showPopup && ticketDetails && (
         <TicketPopup
           occasion={ticketDetails.occasion}
           seat={ticketDetails.seat}
-          qrData={ticketDetails.qrData}
+          ticketString={ticketDetails.ticketString}
           onClose={() => setShowPopup(false)}
         />
       )}

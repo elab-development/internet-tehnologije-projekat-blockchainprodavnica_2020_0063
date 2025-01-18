@@ -151,7 +151,7 @@ function App() {
           className="refund-button"
           onClick={() => setShowRefundModal(true)}
         >
-          Refundacije
+          Vaše ulaznice
         </button>
         {showRefundModal && (
           <RefundModal
