@@ -1,0 +1,773 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Poiret+One&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --clr-white: #ffffff;
+  --clr-black: #000000;
+  --clr-grey: #2b2727;
+  --clr-grey-2: #2b2727;
+  --clr-dark-green: #02542f;
+  --clr-light-green: #03c616;
+}
+
+body {
+  margin: 0;
+  font-family: "Open Sans";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* General styles */
+.cards-container {
+  display: flex;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* Navigation styles */
+nav {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: center;
+}
+
+.nav__brand {
+  display: flex;
+  align-items: center;
+  padding: 0 75px;
+  grid-column: 1 / span 3;
+  height: 65px;
+}
+
+.nav__brand h1 {
+  color: var(--clr-white);
+  font-family: "Poiret One";
+  font-size: 1.5em;
+  font-style: italic;
+  margin-right: 10px;
+}
+
+.nav__search {
+  background: rgba(255, 255, 255, 0.2);
+  background-image: url("./assets/magnifying-glass.svg");
+  background-repeat: no-repeat;
+  background-position-y: center;
+  color: var(--clr-white);
+  width: 250px;
+  height: 35px;
+  border: none;
+  border-radius: 4px;
+  margin: 0 5px;
+  padding-left: 30px;
+}
+
+.nav__search::placeholder {
+  color: var(--clr-white);
+  font-family: "Open Sans";
+}
+
+.nav__links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  list-style: none;
+}
+
+.nav__links li {
+  height: 100%;
+  min-width: 60px;
+}
+
+.nav__links li a {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-wrap: wrap;
+  height: 100%;
+  padding: 0 10px;
+  color: var(--clr-white);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.nav__links li a:hover {
+  background-color: rgba(34, 64, 109, 0.3);
+}
+
+.nav__connect {
+  width: 175px;
+  height: 50px;
+  margin: 0 75px 0 auto;
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--clr-white);
+  border: none;
+  border-radius: 4px;
+  font-family: "Open Sans";
+  font-size: 1.1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 250ms ease;
+}
+
+.nav__connect:hover {
+  background-color: var(--clr-dark-green);
+}
+
+/* Header styles */
+header {
+  background-image: linear-gradient(
+    45deg,
+    var(--clr-dark-green) 10%,
+    var(--clr-light-green) 20%,
+    var(--clr-dark-green) 50%,
+    var(--clr-light-green) 120%
+  );
+  background-size: contain;
+  background-position: right;
+  background-repeat: no-repeat;
+  background-color: var(--clr-grey);
+  min-height: 25vh;
+  position: relative;
+}
+
+.header__title {
+  color: var(--clr-white);
+  position: absolute;
+  bottom: 25px;
+  left: 10%;
+  max-width: 450px;
+  font-family: "Open Sans";
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 300;
+}
+
+/* Card styles */
+.card {
+  align-items: center;
+  width: 95%;
+  max-width: 850px;
+  height: 75px;
+  margin: 25px auto;
+  position: relative;
+  transition: all 250ms ease;
+}
+
+.card__info {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  height: 100%;
+  padding: 10px;
+  text-align: left;
+  transition: 250ms ease all;
+}
+
+.card__info:hover {
+  background: rgba(18, 90, 198, 0.2);
+}
+
+.card__info p small {
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
+}
+
+.card__info p small span {
+  font-weight: 700;
+}
+
+.card__date {
+  grid-column: 1 / span 2;
+  grid-row: 1 / span 2;
+  place-self: center;
+  font-size: clamp(0.95rem, 3vw, 1.15rem);
+  font-weight: 300;
+}
+
+.card__name {
+  grid-column: 3 / span 6;
+  grid-row: 1;
+  place-self: center;
+  align-self: end;
+  font-family: "Open Sans";
+  font-size: clamp(0.9rem, 3vw, 1.1rem);
+  font-weight: 600;
+  text-align: center;
+}
+
+.card__location {
+  grid-column: 3 / span 6;
+  grid-row: 2;
+  place-self: center;
+  align-self: start;
+  font-size: 1.15rem;
+  font-weight: 300;
+  text-align: center;
+}
+
+.card__cost {
+  grid-column: 9 / span 1;
+  grid-row: 1 / span 2;
+  place-self: center;
+  font-size: clamp(1rem, 3vw, 1.1rem);
+  font-weight: 300;
+}
+
+.card__cost strong {
+  font-family: "Open Sans";
+  font-size: clamp(1.1rem, 3vw, 1.5rem);
+  font-weight: 700;
+  margin: 0;
+}
+
+.card__button,
+.card__button--out {
+  grid-column: 10 / span 3;
+  grid-row: 1 / span 2;
+  place-self: center;
+  width: 125px;
+  height: 40px;
+  background-color: var(--clr-light-green);
+  color: var(--clr-white);
+  margin-left: auto;
+  border: none;
+  border-radius: 4px;
+  font-family: "Open Sans";
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 250ms ease;
+}
+
+.card__button:hover {
+  background-color: var(--clr-dark-green);
+}
+
+.card_button:hover .card_button {
+  border-color: var(--clr-grey-2);
+}
+
+.card__button--out {
+  background-color: #ba1840;
+}
+
+.card hr {
+  margin-top: 15px;
+}
+
+/* Seat Chart styles */
+.occasion {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.occasion__seating {
+  display: grid;
+  gap: 5px;
+  grid-template-columns: repeat(25, 1fr);
+  background: linear-gradient(
+    to bottom,
+    var(--clr-light-green),
+    var(--clr-white) 75%
+  );
+  border: 10px solid var(--clr-grey);
+  border-radius: 8px;
+  width: 90%;
+  max-width: 1200px;
+  height: 85%;
+  margin: 0 auto;
+  padding: 20px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  overflow-x: scroll;
+}
+
+.occasion__seating h1 {
+  grid-column: 1 / span 27;
+  grid-row: 1;
+  color: var(--clr-white);
+  font-weight: 300;
+}
+
+.occasion__close {
+  grid-column: 27 / span 1;
+  grid-row: 1;
+  width: 35px;
+  height: 35px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--clr-grey);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 250ms ease all;
+}
+
+.occasion__close:hover {
+  background: rgba(255, 255, 255, 1);
+  border: 1px solid var(--clr-white);
+}
+
+.occasion__close img {
+  width: 25px;
+  height: 25px;
+}
+
+.occasion__stage,
+.occasion__spacer--1,
+.occasion__spacer--2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--clr-grey);
+  color: var(--clr-white);
+}
+
+.occasion__stage {
+  grid-column: 1 / span 27;
+  grid-row: 2;
+  height: 150px;
+  border: 3px solid black;
+  border-radius: 0 0 24px 24px;
+}
+
+.occasion__spacer--1,
+.occasion__spacer--2 {
+  min-width: 30px;
+  margin: 0 5px;
+  border: 1px solid black;
+  writing-mode: vertical-lr;
+}
+
+.occasion__spacer--1 {
+  grid-column: 6 / span 1;
+  grid-row: 3 / span 10;
+}
+
+.occasion__spacer--2 {
+  grid-column: 22 / span 1;
+  grid-row: 3 / span 10;
+}
+
+.occasion__seats,
+.occasion__seats--taken {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--clr-dark-green);
+  color: var(--clr-white);
+  width: 35px;
+  height: 35px;
+  border: 1px solid black;
+  border-radius: 50%;
+  font-size: 0.9em;
+  cursor: pointer;
+  transition: 250ms ease all;
+}
+
+.occasion__seats:hover {
+  background: var(--clr-white);
+  color: var(--clr-black);
+  font-size: 1em;
+  font-weight: 700;
+}
+
+.occasion__seats--taken {
+  background-color: rgba(34, 64, 109, 0.7);
+}
+
+/* Media Queries */
+@media screen and (max-width: 1200px) {
+  nav {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .nav__brand {
+    grid-column: 1;
+  }
+
+  .nav__links {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .nav__search {
+    display: none;
+  }
+
+  .nav__brand {
+    padding: 30px 50px;
+  }
+
+  .nav__connect {
+    margin: 0 50px 0 auto;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .card {
+    height: 100px;
+  }
+
+  .card__info {
+    padding: 0;
+  }
+
+  .card__name {
+    grid-column: 3 / span 7;
+  }
+
+  .card__location {
+    grid-column: 3 / span 7;
+  }
+
+  .card__cost {
+    grid-column: 10 / span 3;
+    grid-row: 1 / span 2;
+    place-self: flex-start;
+    justify-self: center;
+    margin-top: 20px;
+  }
+
+  .card__button {
+    grid-column: 10 / span 3;
+    grid-row: 2 / span 2;
+    place-self: center;
+  }
+}
+
+/* Crypto styles */
+.crypto-list {
+  width: 1000px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  margin-left: auto;
+}
+
+.crypto-list {
+  position: absolute;
+  top: 100;
+  right: 0;
+  width: 500px; /* Set a fixed width */
+  background-color: #fff;
+  border: 1px solid #dddddd;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+}
+
+.crypto-item {
+  border-bottom: 1px solid #ddd;
+  padding: 10px;
+  transition: background-color 0.6s ease; /* Smooth transition effect */
+}
+
+.crypto-item:hover {
+  background-color: #55d159; /* Green background color on hover */
+}
+/* Glavni kontejner za popup (overlay) */
+/* Glavni overlay da potamni pozadinu */
+.ticket-popup {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5); /* poluprovidna crna */
+  z-index: 9999;
+  font-family: "Roboto", sans-serif; /* primer fonta */
+}
+
+/* Bela (ili blago siva) „kartica“ u sredini */
+.ticket-popup__content {
+  position: relative;
+  background: linear-gradient(135deg, #ffffff, #f2f2f2); /* blag gradijent */
+  border-radius: 12px;
+  padding: 30px 40px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  animation: popup-appear 0.3s ease-out; /* animacija iskakanja */
+}
+
+/* Animacija blagog fade-in/slide-up */
+@keyframes popup-appear {
+  0% {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Dugme za zatvaranje (X) gore desno */
+.close-button {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  line-height: 1;
+  color: #333;
+  cursor: pointer;
+}
+
+/* Naslov */
+.ticket-popup__content h2 {
+  margin-bottom: 10px;
+  font-size: 24px;
+  color: #444;
+}
+
+/* Običan tekst */
+.ticket-popup__content p {
+  font-size: 16px;
+  color: #555;
+}
+
+/* Za veći blok teksta – ticketString */
+.ticket-popup__content pre {
+  background: #fff;
+  text-align: left;
+  padding: 10px;
+  margin: 15px 0;
+  max-height: 200px;
+  overflow-y: auto;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  color: #333;
+}
+
+/* QR kontejner – samo margine */
+.ticket-popup__qr {
+  margin: 20px 0;
+}
+
+/* Dugme za Preuzmi kartu (PDF) */
+.ticket-popup__content button {
+  display: inline-block;
+  padding: 12px 24px;
+  margin-top: 10px;
+  background: #0062cc;
+  color: #fff;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background 0.2s ease-in-out;
+}
+
+.ticket-popup__content button:hover {
+  background: #0051a1;
+}
+
+/* Refund Button */
+.refund-button {
+  position: fixed;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  background-color: #03c616; /* Svetlo zelena */
+  color: #ffffff; /* Bela boja teksta */
+  border: none;
+  border-radius: 10px;
+  padding: 15px 20px;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.refund-button:hover {
+  background-color: #02542f; /* Tamno zelena pri hoveru */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.refund-button:active {
+  transform: translateY(-50%) scale(0.95); /* Efekat pritiska */
+}
+
+/* Refund Modal styles */
+/* Refund Modal */
+.refund-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  max-width: 90%;
+  background-color: var(--clr-white);
+  border: 2px solid var(--clr-grey);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  z-index: 1000;
+  text-align: center;
+}
+
+.refund-modal h3 {
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+  color: var(--clr-dark-green);
+}
+
+.refund-modal ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.refund-modal li {
+  margin: 10px 0;
+  padding: 10px;
+  background-color: var(--clr-light-green);
+  color: var(--clr-white);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.refund-modal li:hover {
+  background-color: var(--clr-dark-green);
+}
+
+.refund-modal__seats {
+  margin-top: 10px;
+}
+
+.refund-modal__seats h4 {
+  margin-bottom: 10px;
+  font-size: 1rem;
+  color: var(--clr-grey);
+}
+
+.refund-modal__seat-btn {
+  display: inline-block;
+  margin: 5px;
+  padding: 8px 12px;
+  background-color: var(--clr-grey);
+  color: var(--clr-white);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.refund-modal__seat-btn:hover {
+  background-color: var(--clr-dark-green);
+}
+
+.refund-modal__seat-btn.selected {
+  background-color: var(--clr-light-green);
+  font-weight: bold;
+}
+
+.refund-modal__details {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.refund-modal__details h4 {
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+  color: var(--clr-dark-green);
+}
+
+.refund-modal__details p {
+  margin: 5px 0;
+  font-size: 1rem;
+}
+
+.refund-modal__refund-btn {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #ff5733;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.refund-modal__refund-btn:hover {
+  background-color: #c4451c;
+}
+
+.refund-modal__close-btn {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: var(--clr-grey);
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.refund-modal__close-btn:hover {
+  background-color: var(--clr-dark-green);
+}
+.modal-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-popup__content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-popup__close-btn {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modal-popup__close-btn:hover {
+  background: #0056b3;
+}
