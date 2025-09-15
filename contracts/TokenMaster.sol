@@ -147,4 +147,37 @@ contract TokenMaster is ERC721 {
         (bool success, ) = owner.call{value: address(this).balance}("");
         require(success, "Withdrawal failed");
     }
+
+    // Admin funkcije za upravljanje događajima
+    function clearAllOccasions() public onlyOwner {
+        for(uint256 i = 1; i <= totalOccasions; i++) {
+            delete occasions[i];
+            delete seatsTaken[i];
+        }
+        totalOccasions = 0;
+    }
+
+    function updateOccasion(
+        uint256 _id,
+        string memory _name,
+        uint256 _cost,
+        uint256 _maxTickets,
+        uint256 _eventTimestamp,
+        string memory _time,
+        string memory _location
+    ) public onlyOwner {
+        require(_id > 0 && _id <= totalOccasions, "Invalid occasion ID");
+        occasions[_id].name = _name;
+        occasions[_id].cost = _cost;
+        occasions[_id].maxTickets = _maxTickets;
+        occasions[_id].eventTimestamp = _eventTimestamp;
+        occasions[_id].time = _time;
+        occasions[_id].location = _location;
+    }
+
+    function removeOccasion(uint256 _id) public onlyOwner {
+        require(_id > 0 && _id <= totalOccasions, "Invalid occasion ID");
+        delete occasions[_id];
+        delete seatsTaken[_id];
+    }
 }

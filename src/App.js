@@ -29,7 +29,6 @@ function App() {
 
     const network = await provider.getNetwork();
     const address = config[network.chainId].TokenMaster.address;
-    console.log(address);
     const tokenMaster = new ethers.Contract(address, TokenMaster, provider);
     setTokenMaster(tokenMaster);
 
@@ -74,18 +73,18 @@ function App() {
     if (currentCategory) {
       switch (currentCategory) {
         case "koncerti":
-          filteredData = filteredData.filter((_, index) =>
-            [0, 2, 3, 4, 5].includes(index)
+          filteredData = filteredData.filter((occasion) =>
+            ["ZDRAVKO ČOLIĆ", "ŽELJKO JOKSIMOVIĆ", "MARIJA ŠERIFOVIĆ"].includes(occasion.name)
           );
           break;
         case "pozoriste":
-          filteredData = filteredData.filter((_, index) =>
-            [1, 8].includes(index)
+          filteredData = filteredData.filter((occasion) =>
+            ["HAMLET - Pozorišna predstava", "ROMEO I JULIJA - Balet"].includes(occasion.name)
           );
           break;
         case "sportskiDogađaji":
-          filteredData = filteredData.filter((_, index) =>
-            [6, 7].includes(index)
+          filteredData = filteredData.filter((occasion) =>
+            ["CRVENA ZVEZDA vs PARTIZAN", "NOVAK ĐOKOVIĆ - Exhibition match"].includes(occasion.name)
           );
           break;
         default:
@@ -161,7 +160,7 @@ function App() {
             onClose={() => setShowRefundModal(false)}
           />
         )}
-        {cryptoData && (
+        {cryptoData && !toggle && (
           <div className="crypto-list">
             <h2>Kurs kriptovaluta</h2>
             {cryptoData.slice(0, 10).map((crypto) => (

@@ -1,9 +1,8 @@
-// api.js
 import axios from 'axios';
 
 const BASE_URL = 'https://api.coinranking.com/v2';
 
-const COINRANKING_API_KEY = 'coinranking7a612f625d5d24898652dcfaa7d82bead0eb7b3893c724d0'; // Replace with your actual API key
+const COINRANKING_API_KEY = 'coinranking7a612f625d5d24898652dcfaa7d82bead0eb7b3893c724d0';
 
 export const getCryptoList = async () => {
   try {
